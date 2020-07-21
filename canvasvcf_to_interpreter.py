@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/apps/bio/software/anaconda2/envs/wgs_somatic/bin/python
 
 import argparse
 import csv
