@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import argparse
 import csv
 import vcf
@@ -17,9 +15,12 @@ def read_vcf_new(infile):
 
 # This function actually modifies the vcf to be compliant with Alissa Interpret. 
 # It has to do some awkward stuff but eh... it works
-def mod_canvas_vcf(vcf):
+def mod_canvas_vcf(vcf, refgenome):
+    # Need refgenome as argument so you can run script for both hg19 and hg38
+    # refgenome argument is path to reference genome    
     refposlist = []
-    fasta = "/medstore/External_References/hs37d5/hs37d5.fa"
+    fasta = refgenome
+    #fasta = "/medstore/External_References/hs37d5/hs37d5.fa"
     chrom_dict = SeqIO.to_dict(SeqIO.parse(fasta, "fasta"))  
     vcf_list = list(vcf)
     for rec in vcf_list:        
@@ -141,6 +142,7 @@ def main():
 
     parser.add_argument("vcf_input", nargs="?", type=str, help=':Full path to your vcf input file')
     parser.add_argument("vcf_output", nargs="?", type=str, help=':Specify full output path and filename of the vcf file you want to create')
+    parser.add_argument("refgenome", nargs="?", type=str, help='Full path to your reference genome file')   
     parser.add_argument("-r", "--record", nargs="?", action='store', type=str, help=':Specify which record ya wanna see. Only used for testing')
     parser.add_argument("-n", '--save_normals', action='store_true', help="Set this flag if you do not want to remove the normal (reference) variants from the outptu")
     parser.add_argument('-l', '--length_filtered', action='store_true', help="Set this flag if you do not want to remove the 'L10kb' filter-fail variants")
@@ -153,6 +155,7 @@ def main():
     logging.getLogger().setLevel(logging.INFO)
     inp = args.vcf_input
     outp = args.vcf_output
+    refgenome = args.refgenome   
     rec = args.record
     length_filter = args.length_filtered
     save_normal = args.save_normals
@@ -172,7 +175,7 @@ def main():
         gender = "Unknown"
 
     if source_program == "Canvas":
-        fixed_pyvcf = mod_canvas_vcf(read_vcf_new(inp))
+        fixed_pyvcf = mod_canvas_vcf(read_vcf_new(inp), refgenome)
         write_vcf(fixed_pyvcf, outp, read_vcf_new(inp), length_filter, qual_filter, save_normal)
     elif source_program == "Manta":
         print("Manta not yet implemented ... sorry")
