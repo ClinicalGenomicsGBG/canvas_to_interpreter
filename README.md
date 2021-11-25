@@ -10,5 +10,5 @@ biopython==1.73
 module load anaconda2  
 source activate canvas  
 
-python canvasvcf_to_interpreter_reftest.py -l -q <path to _CNV_germline.vcf> <path to output _CNV_germline_alissaformat.vcf> <path to reference genome>
+`$ python canvasvcf_to_interpreter_reftest.py -l -q <path to _CNV_germline.vcf> <path to output _CNV_germline_alissaformat.vcf> <path to reference genome>`
 
